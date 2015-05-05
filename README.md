@@ -53,7 +53,7 @@ everything that touches them.
 	* mtime, ctime, atime
 	* dev, inode, nlinks
   * Segmental file checksums?
-	* As a reversible translation of (hashdeep)[https://github.com/jessek/hashdeep] output.
+	* As a reversible translation of [hashdeep](https://github.com/jessek/hashdeep) output.
 	* The advantage of segmental sums is that you don't have to read the entire file when making a random validation.
 * Operations possible
   * Scan a directory tree and collect fileprops (metadata).  *Because actually reading the files to get the checksums may take weeks, and we will want to run that in parallel.*
@@ -61,19 +61,19 @@ everything that touches them.
 	* check and update metadata, reporting changes and dropping stale checksums
 	* fill in missing checksums
 * Tools that solve part of the problem
-  * (GNU findutils)[http://savannah.gnu.org/projects/findutils/], (GNU coreutils)[http://gnu.org/software/coreutils]
+  * [GNU findutils](http://savannah.gnu.org/projects/findutils/), [GNU coreutils](http://gnu.org/software/coreutils)
 	* `find /stuff -type f -print0 | xargs -r0 -n5 -P4 sha1sum`
 	* No way to detect intentional changes.
 	* No way to keep several types of checksum, except in multiple files `scans.md5`, `scans.sha1` etc..
-	* There are (other line-based plaintext formats)[https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/md5.1.html] which represent similar results in different ways.
-  * (Summain)[http://liw.fi/summain/] does file scanning and checksumming, and has `--output-format json`.
+	* There are [other line-based plaintext formats](https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/md5.1.html) which represent similar results in different ways.
+  * [Summain](http://liw.fi/summain/) does file scanning and checksumming, and has `--output-format json`.
 	* You have to choose what to scan, and then decide whether the results are still fresh.
-  * (Rsync)[https://rsync.samba.org/] does file change detection, based on metadata comparison; we have to be aware that
+  * [Rsync](https://rsync.samba.org/) does file change detection, based on metadata comparison; we have to be aware that
 	* "dev" and/or "inode" may not be stable on some filesystem types.  *I'm using an NFS which makes the `Dev` field useless.*
 	* timestamp granularity varies with filesystem type
 
 ### Sample data
-I took the output style (Summain)[http://liw.fi/summain/] as my standard, and [made some changes](https://gitlab.com/mcast/summain) to the details.
+I took the output style [Summain](http://liw.fi/summain/) as my standard, and [made some changes](https://gitlab.com/mcast/summain) to the details.
 ```
 $ summain -I --exclude={Username,Group,Atime,Dev} -c nil          -f jsonl todo.jq | tee sum0
 {"Ctime":"2015-05-04 19:39:55.198461000 +0000","Gid":"808","Ino":"34399918","Mode":"100640","Mtime":"2015-05-04 19:39:55.198461000 +0000","Name":"todo.jq","Nlink":"1","Size":"357","Uid":"11179"}
@@ -106,4 +106,4 @@ $ jq . sum0 sum2
 }
 ```
 
-MD5 and SHA2-256 because they are what (iRODS)[http://irods.org/] needs for v3 and v4.
+MD5 and SHA2-256 because they are what [iRODS](http://irods.org/) needs for v3 and v4.

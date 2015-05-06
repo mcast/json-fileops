@@ -11,7 +11,7 @@ This starts as a specification, *i.e.* pure vapourware.
 
 ## `*.fileops.json`: Record of operations upon a set of files
 * Inputs
-  * [ ] Web server logs
+  * [X] [Web server logs](web-fileops/)
   * [ ] strace logs
   * [ ] Random read operations, taken from the set of file
 * Outputs
@@ -27,14 +27,43 @@ whether I want to deal with both.
 
 ### Per-filehandle record style
 
+In which we do a group of operations on a (virtual) file descriptor.
+
+```
+{
+  "elapsed": 0.055,
+  "vfd": [
+    { "Op": "open",
+      "T": 1430210770.509,
+      "fn": "/nfs/bigstash/00000171/1929736.bam" },
+    { "Op": "fstat" },
+    { "Op": "read",
+      "bytes": [ 127729664, 127827967 ] },
+    { "Op": "close" }
+  ]
+}
+{
+  "elapsed": 0.134,
+  "vfd": [
+    { "Op": "open",
+      "T": 1430210770.582,
+      "fn": "/nfs/bigstash/00000171/1929736.bam" },
+    { "Op": "fstat" },
+    { "Op": "read",
+      "bytes": [ 122454016, 122748927 ] },
+    { "Op": "close" }
+  ]
+}
+```
+
+### Per-function record style
+
 An strace-like format, where events are logged in chronological order
 and so you need a (virtual) file descriptor number to tie the later
 operations back to the initial `open`.
 
-### Per-object record style
-
-In which we name a file, then do some operations on it at various
-times.
+This is probably more useful after conversion to per-filehandle
+format.
 
 ## `*.fileprops.json`: Record of file checksums
 

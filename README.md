@@ -9,11 +9,11 @@ about making them reusable, and therefore so would you.
 
 This starts as a specification, *i.e.* pure vapourware.
 
-## `*.fileops.json`: Record of operations upon a set of files
+## `*.fileops.jsonl`: Record of operations upon a set of files
 * Inputs
   * [X] [Web server logs](web-fileops/)
   * [ ] strace logs
-  * [ ] Random read operations, taken from the set of file
+  * [ ] Random read operations, taken from a set of files listed in the `.fileprops.jsonl` style
 * Outputs
   * [ ] Summary statistics for access speeds and concurrency
   * [ ] Re-do the operations
@@ -65,7 +65,7 @@ operations back to the initial `open`.
 This is probably more useful after conversion to per-filehandle
 format.
 
-## `*.fileprops.json`: Record of file checksums
+## `*.fileprops.jsonl`: Record of file checksums
 
 The initial application here is a large POSIX filesystem, for which we
 currently have no checksums or integrity checks.  File may get updated
@@ -102,7 +102,7 @@ everything that touches them.
 	* timestamp granularity varies with filesystem type
 
 ### Sample data
-I took the output style [Summain](http://liw.fi/summain/) as my standard, and [made some changes](https://gitlab.com/mcast/summain) to the details.
+I took the [Summain](http://liw.fi/summain/) output style as my standard, and [made some changes](https://gitlab.com/mcast/summain) to the details.
 ```
 $ summain -I --exclude={Username,Group,Atime,Dev} -c nil          -f jsonl todo.jq | tee sum0
 {"Ctime":"2015-05-04 19:39:55.198461000 +0000","Gid":"808","Ino":"34399918","Mode":"100640","Mtime":"2015-05-04 19:39:55.198461000 +0000","Name":"todo.jq","Nlink":"1","Size":"357","Uid":"11179"}

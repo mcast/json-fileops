@@ -12,7 +12,7 @@ This starts as a specification, *i.e.* pure vapourware.
 ## `*.fileops.jsonl`: Record of operations upon a set of files
 * Inputs
   * [X] [Web server logs](web-fileops/)
-  * [ ] strace logs
+  * [X] [strace logs](strace-fileops/)
   * [ ] Random read operations, taken from a set of files listed in the `.fileprops.jsonl` style
 * Outputs
   * [ ] Summary statistics for access speeds and concurrency
@@ -63,7 +63,45 @@ and so you need a (virtual) file descriptor number to tie the later
 operations back to the initial `open`.
 
 This is probably more useful after conversion to per-filehandle
-format.
+format, since they are intrinsically serial.
+
+```
+{
+  "elapsed": 0.047604,
+  "fn": "/nfs/bigstash/00000035/457682.v1.refract.bwa_mapped.bam.bai",
+  "vfd": 1,
+  "T": 52071.058502,
+  "Op": "open"
+}
+{
+  "elapsed": 3.3e-05,
+  "vfd": 1,
+  "T": 52071.106161,
+  "Op": "fstat"
+}
+{
+  "elapsed": 0.035665,
+  "vfd": 1,
+  "T": 52071.1064,
+  "Op": "read",
+  "_op": "sendfile",
+  "bytes": [
+    0,
+    163840
+  ]
+}
+{
+  "elapsed": 8.8e-05,
+  "vfd": 1,
+  "T": 52071.193666,
+  "Op": "read",
+  "_op": "sendfile",
+  "bytes": [
+    163840,
+    344064
+  ]
+}
+```
 
 ## `*.fileprops.jsonl`: Record of file checksums
 

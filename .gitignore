@@ -2,3 +2,9 @@
 # emacs
 *~
 
+# made
+*.o
+run-fileops/fileops-run-jsonl
+
+# other vc
+run-fileops/jsmn/.hg

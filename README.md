@@ -29,32 +29,7 @@ whether I want to deal with both.
 
 In which we do a group of operations on a (virtual) file descriptor.
 
-```
-{
-  "elapsed": 0.055,
-  "vfd": [
-    { "Op": "open",
-      "T": 1430210770.509,
-      "fn": "/nfs/bigstash/00000171/1929736.bam" },
-    { "Op": "fstat" },
-    { "Op": "read",
-      "bytes": [ 127729664, 127827967 ] },
-    { "Op": "close" }
-  ]
-}
-{
-  "elapsed": 0.134,
-  "vfd": [
-    { "Op": "open",
-      "T": 1430210770.582,
-      "fn": "/nfs/bigstash/00000171/1929736.bam" },
-    { "Op": "fstat" },
-    { "Op": "read",
-      "bytes": [ 122454016, 122748927 ] },
-    { "Op": "close" }
-  ]
-}
-```
+[Example](eg.vfd-grouped.fileops.jsonl); and [pretty-printed](eg.vfd-grouped.fileops.json).
 
 ### Per-function record style
 
@@ -65,43 +40,7 @@ operations back to the initial `open`.
 This is probably more useful after conversion to per-filehandle
 format, since they are intrinsically serial.
 
-```
-{
-  "elapsed": 0.047604,
-  "fn": "/nfs/bigstash/00000035/457682.v1.refract.bwa_mapped.bam.bai",
-  "vfd": 1,
-  "T": 52071.058502,
-  "Op": "open"
-}
-{
-  "elapsed": 3.3e-05,
-  "vfd": 1,
-  "T": 52071.106161,
-  "Op": "fstat"
-}
-{
-  "elapsed": 0.035665,
-  "vfd": 1,
-  "T": 52071.1064,
-  "Op": "read",
-  "_op": "sendfile",
-  "bytes": [
-    0,
-    163840
-  ]
-}
-{
-  "elapsed": 8.8e-05,
-  "vfd": 1,
-  "T": 52071.193666,
-  "Op": "read",
-  "_op": "sendfile",
-  "bytes": [
-    163840,
-    344064
-  ]
-}
-```
+[Example](eg.per-func.fileops.jsonl); and [pretty-printed](eg.per-func.fileops.json).
 
 ## `*.fileprops.jsonl`: Record of file checksums
 
@@ -141,12 +80,14 @@ everything that touches them.
 
 ### Sample data
 I took the [Summain](http://liw.fi/summain/) output style as my standard, and [made some changes](https://gitlab.com/mcast/summain) to the details.
-```
+``` console
 $ summain -I --exclude={Username,Group,Atime,Dev} -c nil          -f jsonl todo.jq | tee sum0
 {"Ctime":"2015-05-04 19:39:55.198461000 +0000","Gid":"808","Ino":"34399918","Mode":"100640","Mtime":"2015-05-04 19:39:55.198461000 +0000","Name":"todo.jq","Nlink":"1","Size":"357","Uid":"11179"}
 $ summain -I --exclude={Username,Group,Atime,Dev} -c md5 -c sha256 -f jsonl todo.jq | tee sum2
 {"Ctime":"2015-05-04 19:39:55.198461000 +0000","Gid":"808","Ino":"34399918","MD5":"efe45c3ac876bf4ae963069c18f17a0c","Mode":"100640","Mtime":"2015-05-04 19:39:55.198461000 +0000","Name":"todo.jq","Nlink":"1","SHA256":"b98236d0b92a8e4d069ac62352e58c8ae66d553560449547f8f518d42819df2c","Size":"357","Uid":"11179"}
 $ jq . sum0 sum2
+```
+``` json
 {
   "Uid": "11179",
   "Ctime": "2015-05-04 19:39:55.198461000 +0000",

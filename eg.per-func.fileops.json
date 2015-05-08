@@ -1,0 +1,35 @@
+{
+  "Op": "open",
+  "T": 52071.058502,
+  "vfd": 1,
+  "fn": "/nfs/bigstash/00000035/457682.v1.refract.bwa_mapped.bam.bai",
+  "elapsed": 0.047604
+}
+{
+  "Op": "fstat",
+  "T": 52071.106161,
+  "vfd": 1,
+  "elapsed": 3.3e-05
+}
+{
+  "bytes": [
+    0,
+    163840
+  ],
+  "_op": "sendfile",
+  "Op": "read",
+  "T": 52071.1064,
+  "vfd": 1,
+  "elapsed": 0.035665
+}
+{
+  "bytes": [
+    163840,
+    344064
+  ],
+  "_op": "sendfile",
+  "Op": "read",
+  "T": 52071.193666,
+  "vfd": 1,
+  "elapsed": 8.8e-05
+}

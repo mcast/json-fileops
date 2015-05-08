@@ -1,0 +1,2 @@
+{ "elapsed": 0.055, "vfd": [ { "Op": "open", "T": 1430210770.509, "fn": "/nfs/bigstash/00000171/1929736.bam" }, { "Op": "fstat" }, { "Op": "read", "bytes": [ 127729664, 127827967 ] }, { "Op": "close" } ] }
+{ "elapsed": 0.134, "vfd": [ { "Op": "open", "T": 1430210770.582, "fn": "/nfs/bigstash/00000171/1929736.bam" }, { "Op": "fstat" }, { "Op": "read", "bytes": [ 122454016, 122748927 ] }, { "Op": "close" } ] }

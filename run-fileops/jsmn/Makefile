@@ -3,11 +3,13 @@
 
 all: libjsmn.a 
 
-libjsmn.a: jsmn.o
+libjsmn.a: jsmn.o jsmn_util.o
 	$(AR) rc $@ $^
 
 %.o: %.c jsmn.h
 	$(CC) -c $(CFLAGS) $< -o $@
+
+jsmn_util.o: jsmn_util.h
 
 test: jsmn_test
 	./jsmn_test
@@ -24,7 +26,7 @@ jsondump: example/jsondump.o libjsmn.a
 	$(CC) $(LDFLAGS) $^ -o $@
 
 clean:
-	rm -f jsmn.o jsmn_test.o example/simple.o
+	rm -f jsmn.o jsmn_test.o example/simple.o jsmn_util.o
 	rm -f jsmn_test
 	rm -f jsmn_test.exe
 	rm -f libjsmn.a

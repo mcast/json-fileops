@@ -38,6 +38,8 @@ static void test(int (*func)(void), const char *name) {
 	printf("start: %d, end: %d, type: %d, size: %d\n", \
 			(t).start, (t).end, (t).type, (t).size)
 
+#include "jsmn_util.h"
+
 #define JSMN_STRICT
 #include "jsmn.c"
 
@@ -543,6 +545,23 @@ int test_keyvalue() {
 	return 0;
 }
 
+int test_util() {
+	check(strcmp("JSMN_PRIMITIVE", jsmntype_str(JSMN_PRIMITIVE)) == 0);
+	check(strcmp("JSMN_OBJECT",    jsmntype_str(JSMN_OBJECT))    == 0);
+	check(strcmp("JSMN_ARRAY",     jsmntype_str(JSMN_ARRAY))     == 0);
+	check(strcmp("JSMN_STRING",    jsmntype_str(JSMN_STRING))    == 0);
+	check(strcmp("JSMN_INVALID_TYPE", jsmntype_str(13))          == 0);
+
+	check(strcmp("JSMN_ERROR_OK",      jsmnerr_str(13))               == 0);
+	check(strcmp("JSMN_ERROR_NOMEM",   jsmnerr_str(JSMN_ERROR_NOMEM)) == 0);
+	check(strcmp("JSMN_ERROR_INVAL",   jsmnerr_str(JSMN_ERROR_INVAL)) == 0);
+	check(strcmp("JSMN_ERROR_PART",    jsmnerr_str(JSMN_ERROR_PART))  == 0);
+	check(strcmp("JSMN_ERROR_UNKNOWN", jsmnerr_str(-13))              == 0);
+
+	return 0;
+}
+
+
 /** A huge redefinition of everything to include jsmn in non-script mode */
 #define jsmn_init jsmn_init_nonstrict
 #define jsmn_parse jsmn_parse_nonstrict
@@ -602,6 +621,7 @@ int main() {
 	test(test_count, "test tokens count estimation");
 	test(test_nonstrict, "test for non-strict mode");
 	test(test_keyvalue, "test for keys/values");
+	test(test_util, "test convenience functions");
 	printf("\nPASSED: %d\nFAILED: %d\n", test_passed, test_failed);
 	return 0;
 }

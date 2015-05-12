@@ -481,23 +481,23 @@ int test_count() {
 
 	js = "[[], [[]], [[], []]]";
 	jsmn_init(&p);
-	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == 7);
+	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == (jsmnerr_t)7);
 
 	js = "[\"a\", [[], []]]";
 	jsmn_init(&p);
-	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == 5);
+	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == (jsmnerr_t)5);
 
 	js = "[[], \"[], [[]]\", [[]]]";
 	jsmn_init(&p);
-	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == 5);
+	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == (jsmnerr_t)5);
 
 	js = "[1, 2, 3]";
 	jsmn_init(&p);
-	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == 4);
+	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == (jsmnerr_t)4);
 
 	js = "[1, 2, [3, \"a\"], null]";
 	jsmn_init(&p);
-	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == 7);
+	check(jsmn_parse(&p, js, strlen(js), NULL, 0) == (jsmnerr_t)7);
 
 	return 0;
 }
@@ -567,7 +567,6 @@ int test_util() {
 	js = "[1,2,3,4]";
 	p.pos = 100; // jsmn_parse_realloc does jsmn_init; without it, we get r==0
 	r = jsmn_parse_realloc(&p, js, strlen(js), &t, NULL);
-	printf("r1=%d\n", r);
 	check(r == 5);
 	check(t != NULL);
 	check(TOKEN_STRING(js, t[2], "2"));
@@ -576,7 +575,6 @@ int test_util() {
 	t = malloc(sizeof(t[0]) * 2);
 	tn = 2;
 	r = jsmn_parse_realloc(&p, js, strlen(js), &t, &tn);
-	printf("r=%d\n", r);
 	check(r == 5);
 	check(tn == 8); // 8 == 2 (input) doubled twice
 	check(TOKEN_STRING(js, t[4], "4"));

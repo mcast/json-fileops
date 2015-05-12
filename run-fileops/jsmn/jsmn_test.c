@@ -546,6 +546,12 @@ int test_keyvalue() {
 }
 
 int test_util() {
+	const char *js;
+	int r;
+	jsmn_parser p;
+	jsmntok_t *t = NULL;
+	size_t tn;
+
 	check(strcmp("JSMN_PRIMITIVE", jsmntype_str(JSMN_PRIMITIVE)) == 0);
 	check(strcmp("JSMN_OBJECT",    jsmntype_str(JSMN_OBJECT))    == 0);
 	check(strcmp("JSMN_ARRAY",     jsmntype_str(JSMN_ARRAY))     == 0);
@@ -557,6 +563,24 @@ int test_util() {
 	check(strcmp("JSMN_ERROR_INVAL",   jsmnerr_str(JSMN_ERROR_INVAL)) == 0);
 	check(strcmp("JSMN_ERROR_PART",    jsmnerr_str(JSMN_ERROR_PART))  == 0);
 	check(strcmp("JSMN_ERROR_UNKNOWN", jsmnerr_str(-13))              == 0);
+
+	js = "[1,2,3,4]";
+	p.pos = 100; // jsmn_parse_realloc does jsmn_init; without it, we get r==0
+	r = jsmn_parse_realloc(&p, js, strlen(js), &t, NULL);
+	printf("r1=%d\n", r);
+	check(r == 5);
+	check(t != NULL);
+	check(TOKEN_STRING(js, t[2], "2"));
+	free(t);
+
+	t = malloc(sizeof(t[0]) * 2);
+	tn = 2;
+	r = jsmn_parse_realloc(&p, js, strlen(js), &t, &tn);
+	printf("r=%d\n", r);
+	check(r == 5);
+	check(tn == 8); // 8 == 2 (input) doubled twice
+	check(TOKEN_STRING(js, t[4], "4"));
+	free(t);
 
 	return 0;
 }

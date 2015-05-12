@@ -28,3 +28,31 @@ const char *jsmnerr_str(jsmnerr_t r) {
     return _jsmnerr_str[1];
   }
 }
+
+
+jsmnerr_t jsmn_parse_realloc(jsmn_parser *parser, const char *js, size_t len,
+			     jsmntok_t **tokens, size_t *num_tokens) {
+  size_t tmp_numtok = 128;
+  jsmnerr_t r;
+
+  if (*tokens == NULL) {
+    num_tokens = &tmp_numtok;
+    *tokens = malloc((*num_tokens) * sizeof((*tokens)[0]));
+    if (! *tokens) return JSMN_ERROR_NOMEM;
+  }
+
+  while(1) {  // break inside
+    jsmn_init(parser);
+    r = jsmn_parse(parser, js, len, *tokens, *num_tokens);
+    if (r == JSMN_ERROR_NOMEM) {
+      unsigned int want_num_tokens = 2 * (*num_tokens);
+      jsmntok_t *newtok = realloc(*tokens, want_num_tokens * sizeof((*tokens)[0]));
+      if (!newtok) break;
+      *num_tokens = want_num_tokens;
+      *tokens = newtok;
+    } else {
+      break;
+    }
+  }
+  return r;
+}

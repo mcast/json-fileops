@@ -72,6 +72,7 @@ int main(int argc, char **argv) {
   unsigned char vfd_filter[MAX_VFD_FILTER/8]; // an array of bits
   int max_vfd = 0;
   int i;
+  int debug = 0;
 
   size_t linebuf_sz = 2048;  // may grow with a realloc
   char *linebuf = malloc(linebuf_sz);
@@ -99,6 +100,9 @@ int main(int argc, char **argv) {
 	vfd_filter_or(vfd_filter, vfd, 1);
 	if (*p == ',') p++;
       }
+
+    } else if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d")) {
+      debug ++;
 
     } else {
       bail("bad option");
@@ -132,6 +136,7 @@ int main(int argc, char **argv) {
       exit(6);
     }
 
+    if (debug) printf("stdin:%d: %s", lnum, linebuf);
     for(i=0; i<r; i++) {
       char old = linebuf[ t[i].end ];
       linebuf[ t[i].end ] = 0;

@@ -645,6 +645,6 @@ int main() {
 	test(test_keyvalue, "test for keys/values");
 	test(test_util, "test convenience functions");
 	printf("\nPASSED: %d\nFAILED: %d\n", test_passed, test_failed);
-	return 0;
+	return test_failed > 127 ? 127 : test_failed;
 }
 

@@ -579,6 +579,7 @@ int test_util() {
 	check(tn == 8); // 8 == 2 (input) doubled twice
 	check(TOKEN_STRING(js, t[4], "4"));
 	free(t);
+	t = NULL;
 
 	return 0;
 }

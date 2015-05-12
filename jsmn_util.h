@@ -33,7 +33,8 @@ extern const char *jsmnerr_str(jsmnerr_t r);
  *
  * If (*tokens) is NULL, jsmn_parse_realloc will malloc a buffer which
  * should be freed by the caller; unless it remains NULL due to
- * insufficient memory.  num_tokens is ignored.
+ * insufficient memory.  num_tokens is ignored.  Don't forget to reset
+ * (*tokens)=NULL after freeing, before parsing again.
  *
  * Otherwise, (*tokens) must be a buffer from malloc and (*num_tokens)
  * shall be its size in sizeof(jsmntok_t).  If it is realloc(3)'d,

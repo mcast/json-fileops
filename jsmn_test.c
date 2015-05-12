@@ -551,6 +551,7 @@ int test_util() {
 	jsmn_parser p;
 	jsmntok_t *t = NULL;
 	size_t tn;
+	char src[1024], dst[1024];
 
 	check(strcmp("JSMN_PRIMITIVE", jsmntype_str(JSMN_PRIMITIVE)) == 0);
 	check(strcmp("JSMN_OBJECT",    jsmntype_str(JSMN_OBJECT))    == 0);
@@ -580,6 +581,64 @@ int test_util() {
 	check(TOKEN_STRING(js, t[4], "4"));
 	free(t);
 	t = NULL;
+
+	memset(src, 'x', sizeof(src));
+	memset(dst, 'y', sizeof(dst));
+	strcpy(src, "[ \"hello\", \"world!\", \"new\\nline\" ]");
+	r = strlen(src);
+	check(jsmn_parse_realloc(&p, src, r, &t, NULL) == (jsmnerr_t)4);
+	/* Copy first string to dst */
+	check(jsmn_nstr(src, &t[1], dst, 16) == 5);
+	check(strcmp("hello", dst) == 0);
+	check(strlen(src) == r);
+	/* Overwrite second string in-place */
+	check(jsmn_nstr(src, &t[2], NULL, 4) == 6); // 4: ignored, not truncating to 3+NUL
+	check(strcmp("[ \"hello\", \"world!", src) == 0);
+	/* Dequote third string */
+	check(jsmn_nstr(src, &t[3], dst, 16) == 8);
+	check(src[ t[3].start + 3 ] == '\\');
+	check(src[ t[3].start + 4 ] == 'n');
+	check(dst[ 3 ] == 10);
+	check(strcmp("new\nline", dst) == 0);
+	/* Truncating copy */
+	check(jsmn_nstr(src, &t[1], dst, 3) == 2);
+	check(strcmp("he", dst) == 0);
+	free(t);
+	t = NULL;
+
+	strcpy(src,
+	       "[\"Back\\b Tab\\t LF\\n FF\\f CR\\r Bel\\u00"
+	       "07 Neg\\u00fF Wide\\u03c0 NUL\\u0000 More\"]");
+	memset(dst, 'Z', sizeof(dst));
+	check(jsmn_parse_realloc(&p, src, strlen(src), &t, NULL) == (jsmnerr_t)2);
+	r = jsmn_nstr(src, &t[1], dst, sizeof(dst));
+	check(strcmp(dst, "Back\b Tab\t LF\n FF\f CR\r Bel\a Neg\xff Wide\\u03c0 NUL") == 0); /* No UTF8 */
+	check(r == strlen(src) - 4 - 5*1 - 3*5); // 4: json marks, 5: \x, 15: 3*\u00NN
+	check(strcmp(dst + strlen(dst) + 1, " More") == 0);
+	check(dst[ strlen(dst) + 1 + strlen(" More")     ] == 0);
+	check(dst[ strlen(dst) + 1 + strlen(" More") + 1 ] == 'Z');
+	/* Test no overflow mid-escape */
+	/* Break src after parse to test bogus escape string */
+	check(src[37] == '0');
+	check(src[38] == '7');
+	src[37] = '*'; /* Make invalid \u00*7 */
+	r = jsmn_nstr(src, &t[1], dst, 39);
+	check(r == 38);
+	check(strlen(dst) == 38);
+	check(strcmp(dst, "Back\b Tab\t LF\n FF\f CR\r Bel\\u00*7 Neg\xff ") == 0);
+	r = jsmn_nstr(src, &t[1], dst, 38);
+	check(r == 37);
+	check(strlen(dst) == 37);
+	check(strcmp(dst, "Back\b Tab\t LF\n FF\f CR\r Bel\\u00*7 Neg\xff") == 0);
+	r = jsmn_nstr(src, &t[1], dst, 37);
+	check(r == 36);
+	check(strlen(dst) == 36);
+	check(strcmp(dst, "Back\b Tab\t LF\n FF\f CR\r Bel\\u00*7 Neg") == 0);
+	r = jsmn_nstr(src, &t[1], dst, 31);
+	check(r == 30);
+	check(strlen(dst) == 30);
+	check(strcmp(dst, "Back\b Tab\t LF\n FF\f CR\r Bel\\u00") == 0);
+	free(t);
 
 	return 0;
 }

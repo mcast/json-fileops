@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stdbool.h>
 #include "jsmn/jsmn.h"
 
 /*
@@ -58,7 +59,7 @@ long _atoi(char *a, char **endptr) {
   return val;
 }
 
-vfd_filter_or(unsigned char *f, int offset, int or) {
+bool vfd_filter_or(unsigned char *f, int offset, int or) {
   int idx = offset / 8;
   int mask = 1 << (offset % 8);
   if (or) f[idx] = f[idx] | (or * mask);
@@ -76,6 +77,8 @@ int main(int argc, char **argv) {
   char *linebuf = malloc(linebuf_sz);
   int lnum = 0;
 
+  if (!linebuf) bail("out of memory (linebuf)");
+
   /* Parse argv */
   for (i=1; i<argc; i++) {
     if (!strcmp(argv[i], "--toffset") || !strcmp(argv[i], "-T")) {
@@ -90,7 +93,8 @@ int main(int argc, char **argv) {
       p = argv[i];
       while (*p) {
 	int vfd = _atoi(p, &p);
-	if (vfd < 1) bail("--vfd requires positive numbers");
+	if (vfd < 0) bail("--vfd requires non-negative numbers");
+	if (vfd >= MAX_VFD_FILTER) bail("--vfd exceeds MAX_VFD_FILTER");
 	if (vfd > max_vfd) max_vfd = vfd;
 	vfd_filter_or(vfd_filter, vfd, 1);
 	if (*p == ',') p++;
@@ -105,6 +109,9 @@ int main(int argc, char **argv) {
     jsmn_parser p;
     jsmntok_t t[128];
     int r;
+
+    /* fileop object props */
+    int vfd = 0; // vfd=0 : strace2jsonl.pl leaves this default when err
 
     /* Read a jsonl line */
     lnum ++;

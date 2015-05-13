@@ -1,3 +1,6 @@
+** nb. this is a temporary Git fork of the hg project jsmn ** https://bitbucket.org/zserge/jsmn/issue/48/jsmn_utilc-do-you-want-extras
+
+----
 
 JSMN
 ====

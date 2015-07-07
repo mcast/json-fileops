@@ -115,3 +115,7 @@ $ jq . sum0 sum2
 ```
 
 MD5 and SHA2-256 because they are what [iRODS](http://irods.org/) needs for v3 and v4.
+
+# History
+* Part of this project was intended to demonstrate or reproduce [a bug in irodsFs (FUSE)](https://github.com/irods/irods/issues/2680)
+* Previous attempt at <https://gist.github.com/mcast/875f50127eb3e7f6e249> ran without provoking the bug.
